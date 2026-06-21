@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <arpa/inet.h>
 
-#include "../icmp/icmp.h"
+#include "../traversal/icmp/icmp.h"
 #include "../traversal/traversal.h"
 
 int main() {
@@ -13,7 +13,7 @@ int main() {
         return -1;
     }
 
-    uint32_t dst = ntohl(inet_addr("255.255.255.255")); // target's public ip
+    uint32_t dst = ntohl(inet_addr("149.248.51.44")); // target's public ip
     uint16_t dst_port = 33836; // target's mapped public port
 
     traversal_send(&ts, dst, dst_port, "helloicmp", 9);
