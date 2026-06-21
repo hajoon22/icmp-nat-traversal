@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <arpa/inet.h>
 
-#include "../icmp/icmp.h"
+#include "../traversal/icmp/icmp.h"
 #include "../traversal/traversal.h"
 
 int main() {
