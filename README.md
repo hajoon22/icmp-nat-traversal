@@ -19,6 +19,30 @@ NAT traversal using ICMP Destination Unreachable packets.
 4. The ICMP payload contains the original IPv4 header, UDP header, and data.
 5. The ICMP packet appears to describe an error for the mapped UDP flow.
 6. Server receives the data.
+## How to Test
+Build and run the server on the device behind the NAT:
+
+```bash
+make server
+sudo ./server
+```
+
+The server prints:
+`udp mapped: public addr=PUBLIC_IP, public sport=MAPPED_PORT`
+
+Edit `src/client/main.c`:
+```c
+uint32_t dst = ntohl(inet_addr("PUBLIC_IP"));
+uint16_t dst_port = MAPPED_PORT;
+```
+
+Build and run the client:
+```bash
+make client
+sudo ./client
+```
+
+`./server` runs on the device behind the NAT being tested.
 
 ## Verified Environments
 - Linux netfilter NAT (Ubuntu, Kernel 7.0.0-15-generic)
