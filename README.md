@@ -19,3 +19,8 @@ NAT traversal using ICMP Destination Unreachable packets.
 4. The ICMP payload contains the original IPv4 header, UDP header, and data.
 5. The ICMP packet appears to describe an error for the mapped UDP flow.
 6. Server receives the data.
+
+## Verified Environments
+- Linux netfilter NAT (Ubuntu, Kernel 7.0.0-15-generic)
+- TELUS Mobility LTE/5G
+- TELUS Wi-Fi Hub (Firmware v3.26.01 build11)
