@@ -55,7 +55,7 @@ int send_icmp_unreach(int s, uint32_t saddr, uint16_t sport, uint32_t daddr, uin
     udph.source = htons(sport);
     udph.dest   = htons(dport);
     udph.len    = htons(sizeof(struct udphdr)+len);
-    udph.check  = htons(checksum((uint8_t *)&udph, sizeof(udph)));
+    udph.check  = 0;
 
     uint8_t *buf = NULL;
     ssize_t size = build_icmp_unreach(&buf, &iph, &udph, data, len);
