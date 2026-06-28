@@ -19,6 +19,76 @@ NAT traversal using ICMP Destination Unreachable packets.
 4. The ICMP payload contains the original IPv4 header, UDP header, and data.
 5. The ICMP packet appears to describe an error for the mapped UDP flow.
 6. Server receives the data.
+
+## How to use another project
+server:
+```c
+#include <stdio.h>
+#include <stdint.h>
+#include <arpa/inet.h>
+
+#include "../traversal/icmp/icmp.h" // include icmp header for using icmp_unreach structure
+#include "../traversal/traversal.h" // include traversal header for using traversal api
+
+int main() {
+    // stun server
+    uint32_t stun_address = ntohl(inet_addr("74.125.250.129"));
+    uint16_t stun_port = 19302;
+
+    // create a new traversal session
+    struct traversal_session ts;
+    if (new_traversal_session(&ts, stun_address, stun_port) < 0) {
+        return -1;
+    }
+
+    // debug
+    struct in_addr a;
+    a.s_addr = htonl(ts.public_address);
+    printf("udp mapped: public addr=%s, public sport=%d\n", inet_ntoa(a), ts.mapped_port);
+
+    while (1) {
+        // read icmp destination unreachable packets (timeout: 1000ms)
+        struct icmp_unreach *rp = traversal_read(&ts, 1000);
+        if (!rp) continue;
+
+        printf("%.*s\n", (int)rp->data_len, rp->data);
+        deinit_icmp_unreach(rp);
+    }
+    deinit_traversal_session(&ts);
+
+    return 0;
+}
+```
+
+client:
+```c
+#include <stdint.h>
+#include <arpa/inet.h>
+
+#include "../traversal/icmp/icmp.h" // include icmp header for using icmp_unreach structure
+#include "../traversal/traversal.h" // include traversal header for using traversal api
+
+int main() {
+    // stun server
+    uint32_t stun_address = ntohl(inet_addr("74.125.250.129"));
+    uint16_t stun_port = 19302;
+
+    // create a new traversal session
+    struct traversal_session ts;
+    if (new_traversal_session(&ts, stun_address, stun_port) < 0) {
+        return -1;
+    }
+
+    // destination info
+    uint32_t dst = ntohl(inet_addr("1.1.1.1")); // target's public ip
+    uint16_t dst_port = 33836; // target's mapped public port
+
+    // send data
+    traversal_send(&ts, dst, dst_port, "helloicmp", 9);
+    deinit_traversal_session(&ts);
+}
+```
+
 ## How to Test
 Build and run the server on the device behind the NAT:
 
