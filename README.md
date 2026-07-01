@@ -27,8 +27,8 @@ server:
 #include <stdint.h>
 #include <arpa/inet.h>
 
-#include "../traversal/icmp/icmp.h" // include icmp header for using icmp_unreach structure
-#include "../traversal/traversal.h" // include traversal header for using traversal api
+#include "../../traversal/icmp/icmp.h" // include icmp header for using icmp_unreach structure
+#include "../../traversal/traversal.h" // include traversal header for using traversal api
 
 int main() {
     // stun server
@@ -53,6 +53,8 @@ int main() {
 
         printf("%.*s\n", (int)rp->data_len, rp->data);
         deinit_icmp_unreach(rp);
+
+        break;
     }
     deinit_traversal_session(&ts);
 
@@ -65,8 +67,8 @@ client:
 #include <stdint.h>
 #include <arpa/inet.h>
 
-#include "../traversal/icmp/icmp.h" // include icmp header for using icmp_unreach structure
-#include "../traversal/traversal.h" // include traversal header for using traversal api
+#include "../../traversal/icmp/icmp.h" // include icmp header for using icmp_unreach structure
+#include "../../traversal/traversal.h" // include traversal header for using traversal api
 
 int main() {
     // stun server
@@ -92,27 +94,34 @@ int main() {
 ## How to Test
 Build and run the server on the device behind the NAT:
 
+Build server:
 ```bash
-make server
+make example
+```
+
+Run the server on the device behind the NAT:
+```bash
 sudo ./server
 ```
 
 The server prints:
 `udp mapped: public addr=PUBLIC_IP, public sport=MAPPED_PORT`
 
-Edit `src/client/main.c`:
+Edit client:
+`src/client/main.c`:
 ```c
 uint32_t dst = ntohl(inet_addr("PUBLIC_IP"));
 uint16_t dst_port = MAPPED_PORT;
 ```
 
-Build and run the client:
+Build client:
 ```bash
-make client
+make example
+```
+Run Client:
+```bash
 sudo ./client
 ```
-
-`./server` runs on the device behind the NAT being tested.
 
 ## Test Results
 Additional test results are welcome.   
