@@ -46,13 +46,15 @@ int main() {
     a.s_addr = htonl(ts.public_address);
     printf("udp mapped: public addr=%s, public sport=%d\n", inet_ntoa(a), ts.mapped_port);
 
+    struct icmp_unreach icmpun;
     while (1) {
-        // read icmp destination unreachable packets (timeout: 1000ms)
-        struct icmp_unreach *rp = traversal_read(&ts, 1000);
-        if (!rp) continue;
-
-        printf("%.*s\n", (int)rp->data_len, rp->data);
-        deinit_icmp_unreach(rp);
+        int n = traversal_read(&ts, &icmpun, 1000);
+        if (n < 0) {
+            printf("%d\n", n);
+            continue;
+        }
+        printf("%.*s\n", (int)icmpun.data_len, icmpun.data);
+        deinit_icmp_unreach(&icmpun);
 
         break;
     }
