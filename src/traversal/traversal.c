@@ -6,8 +6,8 @@
 #include <poll.h>
 
 #include "traversal.h"
-#include "../stun/stun.h"
-#include "../icmp/icmp.h"
+#include "stun/stun.h"
+#include "icmp/icmp.h"
 
 static int udp_keepalive(int s) {
     int pid = fork();
@@ -60,14 +60,13 @@ int new_traversal_session(struct traversal_session *ts, uint32_t stun_addr, uint
     return 0;
 }
 
-struct icmp_unreach *traversal_read(struct traversal_session *ts, int timeout) {
+int traversal_read(struct traversal_session *ts, struct icmp_unreach *icmpun, int timeout) {
     int n = poll(&ts->pfd, 1, timeout);
     if (n > 0) {
-        struct icmp_unreach *rp = read_icmp_unreach(ts->icmp_socket);
-        return rp;
+        return read_icmp_unreach(ts->icmp_socket, icmpun);
     }
 
-    return NULL;
+    return -1;
 }
 
 int traversal_send(struct traversal_session *ts, uint32_t dst, uint16_t dst_port, uint8_t *data, size_t len) {
