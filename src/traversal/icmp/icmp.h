@@ -16,7 +16,7 @@ struct icmp_unreach {
 };
 
 void deinit_icmp_unreach(struct icmp_unreach *rp);
-struct icmp_unreach *read_icmp_unreach(int s);
+int read_icmp_unreach(int s, struct icmp_unreach *icmpun);
 int send_icmp_unreach(int s, uint32_t saddr, uint16_t sport, uint32_t daddr, uint16_t dport, uint8_t *data, size_t len);
 
 #endif
