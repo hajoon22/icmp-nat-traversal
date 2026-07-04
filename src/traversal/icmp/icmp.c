@@ -12,7 +12,6 @@
 void deinit_icmp_unreach(struct icmp_unreach *rp) {
     if (!rp) return;
     free(rp->data);
-    free(rp);
 }
 
 static ssize_t build_icmp_unreach(uint8_t **buf, struct iphdr *iph, struct udphdr *udph, uint8_t *data, size_t len) {
@@ -72,41 +71,28 @@ int send_icmp_unreach(int s, uint32_t saddr, uint16_t sport, uint32_t daddr, uin
     return 0;
 }
 
-struct icmp_unreach *read_icmp_unreach(int s, uint32_t dst) {
-    struct icmp_unreach *rp = calloc(1, sizeof(struct icmp_unreach));
-    if (!rp) return NULL;
-
-    char buf[MAX_DATA_BUFFER];
+int read_icmp_unreach(int s, struct icmp_unreach *icmpun) {
+    if (!icmpun) return -1;
+    
+    uint8_t buf[MAX_DATA_BUFFER];
     int n = read(s, buf, MAX_DATA_BUFFER);
-    if (n < 0) {
-        free(rp);
-        return NULL;
-    }
+    if (n < 0) return -1;
 
     struct iphdr *iph = (struct iphdr *)buf;
     if (n < sizeof(struct iphdr) || ntohs(iph->tot_len) != n) {
-        free(rp);
-        return NULL;
+        return -1;
     }
 
     if (iph->ihl < 5 || iph->ihl*4+sizeof(struct icmphdr) > n) {
-        free(rp);
-        return NULL;
+        return -1;
     }
 
     struct icmphdr *icmph = (struct icmphdr*)(buf+(iph->ihl*4));
     if (icmph->type == ICMP_DEST_UNREACH) {
-        struct iphdr *in_iph = (struct iphdr *)((uint8_t *)icmph + sizeof(struct icmphdr));
-        if (ntohl(in_iph->daddr) != dst) {
-            free(rp);
-            return NULL;
-        }
-
         uint8_t *payload = (uint8_t *)icmph+sizeof(struct icmphdr)+28;
         int len = ntohs(iph->tot_len)-(sizeof(struct icmphdr)+iph->ihl*4+28);
         if (len <= 0) {
-            free(rp);
-            return NULL;
+            return -1;
         }
 
         if (len > MAX_DATA_BUFFER) {
@@ -116,23 +102,21 @@ struct icmp_unreach *read_icmp_unreach(int s, uint32_t dst) {
         // allocate heap buffer for payload
         uint8_t *data = calloc(1, len);
         if (!data) {
-            free(rp);
-            return NULL;
+            return -1;
         }
 
         // copy stack to heap
         memcpy(data, payload, len);
 
         // set results
-        rp->iph = *iph;
-        rp->icmph = *icmph;
+        icmpun->iph = *iph;
+        icmpun->icmph = *icmph;
 
-        rp->data = data;
-        rp->data_len = len;
+        icmpun->data = data;
+        icmpun->data_len = len;
 
-        return rp;
+        return 0;
     }
 
-    free(rp);
-    return NULL;
-}
+    return -1;
+} 
