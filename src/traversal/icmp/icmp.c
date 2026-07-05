@@ -71,7 +71,7 @@ int send_icmp_unreach(int s, uint32_t saddr, uint16_t sport, uint32_t daddr, uin
     return 0;
 }
 
-int read_icmp_unreach(int s, struct icmp_unreach *icmpun) {
+int read_icmp_unreach(int s, uint32_t orig_dst, struct icmp_unreach *icmpun) {
     if (!icmpun) return -1;
     
     uint8_t buf[MAX_DATA_BUFFER];
@@ -89,6 +89,9 @@ int read_icmp_unreach(int s, struct icmp_unreach *icmpun) {
 
     struct icmphdr *icmph = (struct icmphdr*)(buf+(iph->ihl*4));
     if (icmph->type == ICMP_DEST_UNREACH) {
+        struct iphdr *in_iph = (struct iphdr *)(buf+iph->ihl*4+sizeof(struct icmphdr));
+        if (ntohl(in_iph->daddr) != orig_dst) return -1;
+
         uint8_t *payload = (uint8_t *)icmph+sizeof(struct icmphdr)+28;
         int len = ntohs(iph->tot_len)-(sizeof(struct icmphdr)+iph->ihl*4+28);
         if (len <= 0) {
