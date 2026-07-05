@@ -63,7 +63,7 @@ int new_traversal_session(struct traversal_session *ts, uint32_t stun_addr, uint
 int traversal_read(struct traversal_session *ts, struct icmp_unreach *icmpun, int timeout) {
     int n = poll(&ts->pfd, 1, timeout);
     if (n > 0) {
-        return read_icmp_unreach(ts->icmp_socket, icmpun);
+        return read_icmp_unreach(ts->icmp_socket, ts->stun_address, icmpun);
     }
 
     return -1;
