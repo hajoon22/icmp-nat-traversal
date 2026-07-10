@@ -22,7 +22,7 @@ struct traversal_session {
 };
 
 void deinit_traversal_session(struct traversal_session *ts);
-int new_traversal_session(struct traversal_session *ts, uint32_t stun_addr, uint16_t stun_port);
+int new_traversal_session(struct traversal_session *ts);
 int traversal_read(struct traversal_session *ts, struct icmp_unreach *icmpun, int timeout);
 int traversal_send(struct traversal_session *ts, uint32_t dst, uint16_t dst_port, uint8_t *data, size_t len);
 
