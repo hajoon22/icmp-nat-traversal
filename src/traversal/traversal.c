@@ -29,10 +29,7 @@ void deinit_traversal_session(struct traversal_session *ts) {
     close(ts->icmp_socket);
 }
 
-int new_traversal_session(struct traversal_session *ts, uint32_t stun_addr, uint16_t stun_port) {
-    ts->stun_address = stun_addr;
-    ts->stun_port = stun_port;
-
+int new_traversal_session(struct traversal_session *ts) {
     ts->udp_socket = get_stun(ts->stun_address, ts->stun_port, &ts->public_address, &ts->mapped_port);
     if (ts->udp_socket < 0) return ts->udp_socket;
 
