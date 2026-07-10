@@ -6,14 +6,14 @@
 #include "../../traversal/traversal.h"
 
 int main() {
-    uint32_t stun_address = ntohl(inet_addr("74.125.250.129"));
-    uint16_t stun_port = 19302;
-
     struct traversal_session ts;
-    if (new_traversal_session(&ts, stun_address, stun_port) < 0) {
+    ts.stun_address = ntohl(inet_addr("74.125.250.129"));
+    ts.stun_port = 19302;
+
+    if (new_traversal_session(&ts) < 0) {
         return -1;
     }
-    
+
     struct in_addr a;
     a.s_addr = htonl(ts.public_address);
     printf("udp mapped: public addr=%s, public sport=%d\n", inet_ntoa(a), ts.mapped_port);
