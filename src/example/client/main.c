@@ -5,11 +5,11 @@
 #include "../../traversal/traversal.h"
 
 int main() {
-    uint32_t stun_address = ntohl(inet_addr("74.125.250.129"));
-    uint16_t stun_port = 19302;
-
     struct traversal_session ts;
-    if (new_traversal_session(&ts, stun_address, stun_port) < 0) {
+    ts.stun_address = ntohl(inet_addr("74.125.250.129"));
+    ts.stun_port = 19302;
+
+    if (new_traversal_session(&ts) < 0) {
         return -1;
     }
 
