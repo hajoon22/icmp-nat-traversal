@@ -1,13 +1,11 @@
-client: client-main.o icmp.o checksum.o traversal.o stun.o
-	gcc -o client client-main.o icmp.o checksum.o traversal.o stun.o
-client-main.o: src/client/main.c
-	gcc -c src/client/main.c -o client-main.o
-
-server: server-main.o stun.o icmp.o checksum.o traversal.o
+example: client-main.o server-main.o icmp.o checksum.o traversal.o stun.o
 	gcc -o server server-main.o stun.o icmp.o checksum.o traversal.o
-server-main.o: src/server/main.c
-	gcc -c src/server/main.c -o server-main.o
+	gcc -o client client-main.o icmp.o checksum.o traversal.o stun.o
 
+client-main.o: src/example/client/main.c
+	gcc -c src/example/client/main.c -o client-main.o
+server-main.o: src/example/server/main.c
+	gcc -c src/example/server/main.c -o server-main.o
 traversal.o: src/traversal/traversal.c src/traversal/traversal.h
 	gcc -c src/traversal/traversal.c -o traversal.o
 checksum.o: src/traversal/icmp/checksum/checksum.c src/traversal/icmp/checksum/checksum.h
