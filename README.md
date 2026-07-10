@@ -31,13 +31,12 @@ server:
 #include "../../traversal/traversal.h" // include traversal header for using traversal api
 
 int main() {
-    // stun server
-    uint32_t stun_address = ntohl(inet_addr("74.125.250.129"));
-    uint16_t stun_port = 19302;
-
     // create a new traversal session
     struct traversal_session ts;
-    if (new_traversal_session(&ts, stun_address, stun_port) < 0) {
+    ts.stun_address = ntohl(inet_addr("74.125.250.129"));
+    ts.stun_port = 19302;
+
+    if (new_traversal_session(&ts) < 0) {
         return -1;
     }
 
@@ -73,13 +72,12 @@ client:
 #include "../../traversal/traversal.h" // include traversal header for using traversal api
 
 int main() {
-    // stun server
-    uint32_t stun_address = ntohl(inet_addr("74.125.250.129"));
-    uint16_t stun_port = 19302;
-
     // create a new traversal session
     struct traversal_session ts;
-    if (new_traversal_session(&ts, stun_address, stun_port) < 0) {
+    ts.stun_address = ntohl(inet_addr("74.125.250.129"));
+    ts.stun_port = 19302;
+
+    if (new_traversal_session(&ts) < 0) {
         return -1;
     }
 
