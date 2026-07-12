@@ -1,18 +1,13 @@
 ## ICMP NAT Traversal
 NAT traversal using ICMP Destination Unreachable packets.
 
-## Overview
+### Overview
 1. Creates and maintains a UDP mapping.
 2. Sends ICMP Destination Unreachable packets referencing the mapped UDP flow.
 3. Delivers data through the ICMP payload.
 4. Receives data through the NAT mapping.
 
-## Packet Format
-**ICMP Destination Unreachable**
-
-`[ICMP Header (8 bytes)][IPv4 Header (20 bytes)][UDP Header (8 bytes)][Data (n bytes)]`
-
-## Workflow
+### Workflow
 1. Server creates a UDP mapping.
 2. Server keeps the mapping alive.
 3. Client crafts an ICMP Destination Unreachable packet referencing the mapped UDP flow.
@@ -20,7 +15,7 @@ NAT traversal using ICMP Destination Unreachable packets.
 5. The ICMP packet appears to describe an error for the mapped UDP flow.
 6. Server receives the data.
 
-## How to use another project
+### How to use another project
 server:
 ```c
 #include <stdio.h>
@@ -91,7 +86,7 @@ int main() {
 }
 ```
 
-## How to Test
+### How to Test
 Build and run the server on the device behind the NAT:
 
 Build server:
@@ -123,11 +118,11 @@ Run Client:
 sudo ./client
 ```
 
-## Test Results
+### Test Results
 Additional test results are welcome.   
 Please send NAT type/device, firmware/version (if available), and whether traversal worked to <hajoon@hajoon.me>.
 
-## Verified Environments
+### Verified Environments
 - Linux netfilter NAT (Ubuntu, Kernel 7.0.0-15-generic)
 - TELUS Mobility LTE/5G
 - TELUS Wi-Fi Hub (Firmware v3.26.01 build11)
