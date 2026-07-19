@@ -127,5 +127,3 @@ Please send NAT type/device, firmware/version (if available), and whether traver
 - TELUS Mobility LTE/5G
 - TELUS Wi-Fi Hub (Firmware v3.26.01 build11)
 - Vancouver International Airport Authority Public Wi-Fi
-- U+ GAPD-7500R (Software Version 1.03.10)
-- LGTELECOM Mobility LTE/5G
